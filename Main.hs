@@ -23,12 +23,82 @@ evalExpr env (AssignExpr OpAssign (LVar var) expr) = do
     e <- evalExpr env expr
     setVar var e
 
+evalExpr env (StringLit str) = return (String str)
+
+
 evalStmt :: StateT -> Statement -> StateTransformer Value
 evalStmt env EmptyStmt = return Nil
 evalStmt env (VarDeclStmt []) = return Nil
 evalStmt env (VarDeclStmt (decl:ds)) =
     varDecl env decl >> evalStmt env (VarDeclStmt ds)
 evalStmt env (ExprStmt expr) = evalExpr env expr
+----------------------------------------------------
+--return
+evalStmt env (ReturnStmt expr) = 
+    case expr of
+        Nothing -> return Nil
+        Just v -> do
+            e <- evalExpr env v
+            return $ Return e
+
+----------------------------------------------------
+--blockstm
+evalStmt env (BlockStmt  []) = return Nil
+evalStmt env (BlockStmt (s:stm)) = do 
+    s1 <- evalStmt env s
+    case s1 of 
+        Break -> return Break 
+        Return k -> return (Return k)
+        _ -> do 
+            evalStmt env s
+            evalStmt env (BlockStmt stm)
+
+-----------------------------------------------------
+--IF sem else
+
+evalStmt env (IfSingleStmt expr sttm) = do
+    Bool e <- evalExpr env expr
+    if e then do
+        s <-evalStmt env sttm
+        return s
+
+    else
+        return Nil
+-- IF com else
+
+evalStmt env (IfStmt expr sttmif sttmelse) = do 
+        Bool e <- evalExpr env expr
+        if e then do
+            sif <- evalStmt env sttmif
+            return sif
+        else do
+            selse <- evalStmt env sttmelse
+            return selse
+----------------------------------------------------
+--DOwhile
+evalStmt env (DoWhileStmt sttm expr) = do 
+    s <- evalStmt env sttm 
+    case s of 
+        Break -> return Break
+        _ -> do 
+             Bool e <- evalExpr env expr
+             if e then evalStmt env (DoWhileStmt sttm expr) else return Nil
+
+
+-----------------------------------------------------
+--while
+evalStmt env (WhileStmt expr sttm) = do
+       Bool e <- evalExpr env expr
+       if e then do
+        s <- evalStmt env sttm
+        case s of 
+            Break -> return Break
+            _ -> evalStmt env (WhileStmt expr sttm)
+        else
+            return Nil
+
+-----------------------------------------------------
+
 
 -- Do not touch this one :)
 evaluate :: StateT -> [Statement] -> StateTransformer Value
@@ -114,7 +184,7 @@ getResult (ST f) = f Map.empty
 
 main :: IO ()
 main = do
-    js <- Parser.parseFromFile "Main.js"
+    js <- Parser.parseFromFile "teste.js"
     let statements = unJavaScript js
     putStrLn $ "AST: " ++ (show $ statements) ++ "\n"
     putStr $ showResult $ getResult $ evaluate environment statements

@@ -6,6 +6,8 @@ data Value = Bool Bool
     | Var String
     | Nil
 
+    |Break
+    |Return Value
 --
 -- Pretty Printer
 --
@@ -17,6 +19,8 @@ instance Show Value where
   show (String str) = "\"" ++ str ++ "\""
   show (Var name) = name
   show Nil = "undefined"
+
+  show Break = "break"
   
 -- This function could be replaced by (unwords.map show). The unwords
 -- function takes a list of String values and uses them to build a 
@@ -25,3 +29,7 @@ showListContents :: [Value] -> String
 showListContents [] = ""
 showListContents [a] = show a
 showListContents (a:as) = show a ++ ", " ++ (showListContents as)
+
+instance Eq Value where
+   (Int a) == (Int b) = a == b
+   --(String b) == (String b) = a == b
