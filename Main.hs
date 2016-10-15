@@ -54,6 +54,17 @@ evalExpr env (CallExpr expr expressoes) = do
                 (List a) -> return $ List (l++a)
                 valor -> return $ List (l++[valor])
         
+--------------------------------------------------------
+--Brackets
+evalExpr env (BracketRef expr index) = do
+    ex <- evalExpr env expr
+    i <- evalExpr env index
+    case ex of 
+        (List t) -> do
+            case i of 
+                (Int j) -> getPosicao env ex i
+                _ -> error $ "Index needs to be an Int"
+        _ -> error $ "Invalid Object"
 
 
 --------------------------------------------------------
@@ -62,8 +73,18 @@ tamanhoLista (List []) (Int tam) = return $ Int tam
 tamanhoLista (List (a:as)) (Int tam) = tamanhoLista (List as) (Int (tam+1))
 ------------------------------------------------------------------------------
 
+getPosicao :: StateT -> Value -> Value -> StateTransformer Value
+getPosicao env (List []) (Int index)  = error $ "Empty list"
+getPosicao env (List (l:ls)) (Int index) = do
+    if index < 0 then
+        error $ "Invalid index"
+    else
+        if (index == 0) then 
+            return l
+        else
+            getPosicao env (List ls) (Int (index - 1))
 
---TODO tail e concat 
+
 
 evalStmt :: StateT -> Statement -> StateTransformer Value
 evalStmt env EmptyStmt = return Nil
@@ -136,22 +157,37 @@ evalStmt env (WhileStmt expr sttm) = do
         else
             return Nil
 ----------------------------------------------------
+--ForStmt
+
+----------------------------------------------------
+
 --Continue
 evalStmt env (ContinueStmt continue) = return Continue
 -----------------------------------------------------
 --Break
 evalStmt env (BreakStmt break) = return Break
 -----------------------------------------------------
---SwitchCase
+--SwitchCase 
 
---evalStmt env (SwitchStmt expr []) = evalExpr env expr
---evalStmt env (SwitchStmt expr (s:stm)) = do
---    e <- evalExpr env expr
---    case s of 
---        CaseClause expressao arrsttm -> do 
---            ex <- evalExpr env expressao
---            Bool comp <- infixOp OpEq e expressao
---            if comp then do
+evalStmt env (SwitchStmt expr []) = evalExpr env expr
+evalStmt env (SwitchStmt expr (s:stm)) = do
+    e <- evalExpr env expr
+    case s of 
+        CaseClause expressao arraysttm -> do 
+            ex <- evalExpr env expressao
+            Bool a <- infixOp env OpEq ex e
+            case ex of 
+                (List t) -> do 
+                  if a then 
+                    evalStmt env (BlockStmt arraysttm)
+                  else
+                    evalStmt env (SwitchStmt expr stm) 
+
+                _ -> do 
+                    if a then
+                       evalStmt env (BlockStmt arraysttm)
+                    else
+                       evalStmt env (SwitchStmt expr stm) 
 
 -- Do not touch this one :)
 evaluate :: StateT -> [Statement] -> StateTransformer Value
@@ -179,6 +215,11 @@ infixOp env OpLAnd (Bool v1) (Bool v2) = return $ Bool $ v1 && v2
 infixOp env OpLOr  (Bool v1) (Bool v2) = return $ Bool $ v1 || v2
 
 -----------------------------------------------------------------
+--String
+infixOp env OpEq (String v1) (String v2) = return $ Bool $ v1 == v2
+infixOp env OpAdd (String v1) (String v2) = return $ String $ v1++v2
+-----------------------------------------------------------------
+--Lista
 infixOp env OpEq  (List [])  (List []) = return $ Bool True
 infixOp env OpEq  (List [])  l  = return $ Bool False
 infixOp env OpEq  l  (List [])  = return $ Bool False
@@ -187,15 +228,10 @@ infixOp env OpEq  (List l)   (List m) = do
     p1 <- infixOp env OpEq (List (tail l)) (List (tail m))
     Bool resul <- infixOp env OpLAnd p p1
     return $ Bool resul
--------------------------------------------------------------------
-infixOp env OpEq (String v1) (String v2) = return $ Bool $ v1 == v2
 
-
-
-
-
-
-
+infixOp env OpNEq  (List l) (List m) = do
+    Bool resul <- infixOp env OpEq (List l)  (List m)
+    return $ Bool  $ not resul
 --
 -- Environment and auxiliary functions
 --

@@ -36,4 +36,5 @@ showListContents (a:as) = show a ++ ", " ++ (showListContents as)
 
 instance Eq Value where
    (Int a) == (Int b) = a == b
-   --(String b) == (String b) = a == b
+   (String b) == (String b) = a == b
+  

@@ -24,15 +24,31 @@
 // }
 
 
-
- var x = [1,2];
- var y = ["a","b"];
+ var x = "a";
+ var y;
  var w = ["1,2","b"];
  // var c = x.head();
  // var d = x.tail();
  // var e = x.concat(y);
  // var f = x.len();
  // c;
+// var z = (w==x);
+ // var a = (w!=y);
+ // var b = "aa"+"b";
+//  y=w;
+//  // b;
+//  var kessia = 8;
+//  var r = 0;
+// kessia =+ kessia;
 
- // var z = (w==x);
- var a = (w==y);
+switch (x) {
+
+	case "b":
+		y = [2];
+		break;
+
+	case "ab":
+		y = [3];
+		break;
+
+}
