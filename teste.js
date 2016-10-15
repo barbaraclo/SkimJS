@@ -1,5 +1,5 @@
-var a = 2;
-var b = 1;
+// var a = 2;
+// var b = 1;
 
 // while (a>b) {
 // 	b = b+1;
@@ -13,8 +13,22 @@ var b = 1;
 // 	b=0;
 // }
 
-do {
-	var x = a;
-	a = 1;
-}
-while (b >a)
+// do {
+// 	var x = a;
+// 	a = 1;
+// }
+// while (b >a)
+
+// if (a >b){
+// 	break;
+// }
+
+
+
+ var x = [1,2];
+ var y = ["a","b"];
+ var c = x.head();
+ var d = x.tail();
+ var e = x.concat(y);
+ var f = x.len();
+ // c;

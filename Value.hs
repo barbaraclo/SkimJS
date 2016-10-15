@@ -8,6 +8,8 @@ data Value = Bool Bool
 
     |Break
     |Return Value
+    |Continue
+    |Array [Value]
 --
 -- Pretty Printer
 --
@@ -21,6 +23,8 @@ instance Show Value where
   show Nil = "undefined"
 
   show Break = "break"
+  show Continue = "continue"
+  show (Array a) = show a
   
 -- This function could be replaced by (unwords.map show). The unwords
 -- function takes a list of String values and uses them to build a 

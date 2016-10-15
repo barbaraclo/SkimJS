@@ -24,7 +24,46 @@ evalExpr env (AssignExpr OpAssign (LVar var) expr) = do
     setVar var e
 
 evalExpr env (StringLit str) = return (String str)
+-----------------------------------------------------
+--Array 
+evalExpr env (ArrayLit []) = return (Array [])
+evalExpr env (ArrayLit (e:es)) = do
+    exp1 <- evalExpr env e
+    Array expressoes <- evalExpr env (ArrayLit es)
+    return (Array (exp1:expressoes))
+------------------------------------------------------
+--chamada de função
+evalExpr env (CallExpr expr expressoes) = do
+    case expr of 
+   
+        (DotRef lista (Id "head")) -> do
+            (Array l) <- evalExpr env lista
+            return $ head l
 
+        (DotRef lista (Id "tail")) -> do
+            (Array l) <- evalExpr env lista
+            return $ (Array (tail l))
+        (DotRef lista (Id "len")) -> do
+             (Array l) <- evalExpr env lista
+             tamanhoArray (Array l) (Int 0)
+ --dois parametros       
+        (DotRef lista (Id "concat")) -> do
+            (Array l) <- evalExpr env lista
+            array <- evalExpr env (head expressoes)
+            case array of
+                (Array a) -> return $ Array (l++a)
+                valor -> return $ Array (l++[valor])
+        
+
+
+--------------------------------------------------------
+tamanhoArray :: Value -> Value -> StateTransformer Value
+tamanhoArray (Array []) (Int tam) = return $ Int tam
+tamanhoArray (Array (a:as)) (Int tam) = tamanhoArray (Array as) (Int (tam+1))
+------------------------------------------------------------------------------
+
+
+--TODO tail e concat 
 
 evalStmt :: StateT -> Statement -> StateTransformer Value
 evalStmt env EmptyStmt = return Nil
@@ -96,9 +135,23 @@ evalStmt env (WhileStmt expr sttm) = do
             _ -> evalStmt env (WhileStmt expr sttm)
         else
             return Nil
-
+----------------------------------------------------
+--Continue
+evalStmt env (ContinueStmt continue) = return Continue
 -----------------------------------------------------
+--Break
+evalStmt env (BreakStmt break) = return Break
+-----------------------------------------------------
+--SwitchCase
 
+--evalStmt env (SwitchStmt expr []) = evalExpr env expr
+--evalStmt env (SwitchStmt expr (s:stm)) = do
+--    e <- evalExpr env expr
+--    case s of 
+--        CaseClause expressao arrsttm -> do 
+--            ex <- evalExpr env expressao
+--            Bool comp <- infixOp OpEq e expressao
+--            if comp then do
 
 -- Do not touch this one :)
 evaluate :: StateT -> [Statement] -> StateTransformer Value
@@ -124,6 +177,8 @@ infixOp env OpEq   (Bool v1) (Bool v2) = return $ Bool $ v1 == v2
 infixOp env OpNEq  (Bool v1) (Bool v2) = return $ Bool $ v1 /= v2
 infixOp env OpLAnd (Bool v1) (Bool v2) = return $ Bool $ v1 && v2
 infixOp env OpLOr  (Bool v1) (Bool v2) = return $ Bool $ v1 || v2
+
+infixOp env OpBAnd  (Int  v1) (Int  v2) = error $ "Não implementado"
 
 --
 -- Environment and auxiliary functions
