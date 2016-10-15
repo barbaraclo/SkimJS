@@ -25,41 +25,41 @@ evalExpr env (AssignExpr OpAssign (LVar var) expr) = do
 
 evalExpr env (StringLit str) = return (String str)
 -----------------------------------------------------
---Array 
-evalExpr env (ArrayLit []) = return (Array [])
+--Lista 
+evalExpr env (ArrayLit []) = return (List [])
 evalExpr env (ArrayLit (e:es)) = do
     exp1 <- evalExpr env e
-    Array expressoes <- evalExpr env (ArrayLit es)
-    return (Array (exp1:expressoes))
+    List expressoes <- evalExpr env (ArrayLit es)
+    return (List (exp1:expressoes))
 ------------------------------------------------------
 --chamada de função
 evalExpr env (CallExpr expr expressoes) = do
     case expr of 
    
         (DotRef lista (Id "head")) -> do
-            (Array l) <- evalExpr env lista
+            (List l) <- evalExpr env lista
             return $ head l
 
         (DotRef lista (Id "tail")) -> do
-            (Array l) <- evalExpr env lista
-            return $ (Array (tail l))
+            (List l) <- evalExpr env lista
+            return $ (List (tail l))
         (DotRef lista (Id "len")) -> do
-             (Array l) <- evalExpr env lista
-             tamanhoArray (Array l) (Int 0)
+             (List l) <- evalExpr env lista
+             tamanhoLista (List l) (Int 0)
  --dois parametros       
         (DotRef lista (Id "concat")) -> do
-            (Array l) <- evalExpr env lista
-            array <- evalExpr env (head expressoes)
-            case array of
-                (Array a) -> return $ Array (l++a)
-                valor -> return $ Array (l++[valor])
+            (List l) <- evalExpr env lista
+            list<- evalExpr env (head expressoes)
+            case list of
+                (List a) -> return $ List (l++a)
+                valor -> return $ List (l++[valor])
         
 
 
 --------------------------------------------------------
-tamanhoArray :: Value -> Value -> StateTransformer Value
-tamanhoArray (Array []) (Int tam) = return $ Int tam
-tamanhoArray (Array (a:as)) (Int tam) = tamanhoArray (Array as) (Int (tam+1))
+tamanhoLista :: Value -> Value -> StateTransformer Value
+tamanhoLista (List []) (Int tam) = return $ Int tam
+tamanhoLista (List (a:as)) (Int tam) = tamanhoLista (List as) (Int (tam+1))
 ------------------------------------------------------------------------------
 
 
@@ -178,7 +178,23 @@ infixOp env OpNEq  (Bool v1) (Bool v2) = return $ Bool $ v1 /= v2
 infixOp env OpLAnd (Bool v1) (Bool v2) = return $ Bool $ v1 && v2
 infixOp env OpLOr  (Bool v1) (Bool v2) = return $ Bool $ v1 || v2
 
-infixOp env OpBAnd  (Int  v1) (Int  v2) = error $ "Não implementado"
+-----------------------------------------------------------------
+infixOp env OpEq  (List [])  (List []) = return $ Bool True
+infixOp env OpEq  (List [])  l  = return $ Bool False
+infixOp env OpEq  l  (List [])  = return $ Bool False
+infixOp env OpEq  (List l)   (List m) = do
+    p <- infixOp env OpEq (head l) (head m)
+    p1 <- infixOp env OpEq (List (tail l)) (List (tail m))
+    Bool resul <- infixOp env OpLAnd p p1
+    return $ Bool resul
+-------------------------------------------------------------------
+infixOp env OpEq (String v1) (String v2) = return $ Bool $ v1 == v2
+
+
+
+
+
+
 
 --
 -- Environment and auxiliary functions

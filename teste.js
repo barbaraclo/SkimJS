@@ -27,8 +27,12 @@
 
  var x = [1,2];
  var y = ["a","b"];
- var c = x.head();
- var d = x.tail();
- var e = x.concat(y);
- var f = x.len();
+ var w = ["1,2","b"];
+ // var c = x.head();
+ // var d = x.tail();
+ // var e = x.concat(y);
+ // var f = x.len();
  // c;
+
+ // var z = (w==x);
+ var a = (w==y);
