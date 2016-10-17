@@ -1,5 +1,6 @@
 module Value (Value (..)) where
 
+import Language.ECMAScript3.Syntax
 data Value = Bool Bool
     | Int Int
     | String String
@@ -10,6 +11,7 @@ data Value = Bool Bool
     |Return Value
     |Continue
     |List [Value]
+    |Function Id [Id] [Statement]
 --
 -- Pretty Printer
 --
@@ -25,6 +27,7 @@ instance Show Value where
   show Break = "break"
   show Continue = "continue"
   show (List a) = show a
+  show (Function (Id nome) listarg liststtm) = "Function" ++ nome ++ "("++ show listarg ++ ")" 
   
 -- This function could be replaced by (unwords.map show). The unwords
 -- function takes a list of String values and uses them to build a 
@@ -34,7 +37,7 @@ showListContents [] = ""
 showListContents [a] = show a
 showListContents (a:as) = show a ++ ", " ++ (showListContents as)
 
-instance Eq Value where
-   (Int a) == (Int b) = a == b
-   (String b) == (String b) = a == b
+--instance Eq Value where
+--   (Int a) == (Int b) = a == b
+--   (String b) == (String b) = a == b
   

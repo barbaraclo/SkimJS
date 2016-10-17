@@ -25,6 +25,11 @@ evalExpr env (AssignExpr OpAssign (LVar var) expr) = do
 
 evalExpr env (StringLit str) = return (String str)
 -----------------------------------------------------
+--function
+evalExpr env (FuncExpr Nothing args sttm) = return $ Function (Id "") args sttm
+evalExpr env (FuncExpr (Just nome) args sttm) = return $ Function nome args sttm
+
+-----------------------------------------------------
 --Lista 
 evalExpr env (ArrayLit []) = return (List [])
 evalExpr env (ArrayLit (e:es)) = do
@@ -158,6 +163,58 @@ evalStmt env (WhileStmt expr sttm) = do
             return Nil
 ----------------------------------------------------
 --ForStmt
+evalStmt env (ForStmt init test increment sttm) = do
+
+    case init of 
+        NoInit -> return Nil
+        VarInit var -> evalStmt env (VarDeclStmt var)
+        ExprInit expr -> evalExpr env expr
+    case test of 
+        Nothing -> do
+            s <- evalStmt env sttm
+            case s of
+                Return t -> return (Return t)
+                Break -> return Break
+                _ -> do
+                    case increment of 
+                        Nothing -> evalStmt env (ForStmt NoInit test increment sttm)
+                        Just i -> do
+                                  evalExpr env i
+                                  evalStmt env (ForStmt NoInit test increment sttm)
+
+        Just t -> do
+            Bool tst <- evalExpr env t 
+            if tst then do
+                s <- evalStmt env sttm
+                case s of 
+                     Return t -> return (Return t)
+                     Break -> return Break
+                     _ -> do
+                        case increment of 
+                           Nothing -> evalStmt env (ForStmt NoInit test increment sttm)
+                           Just i -> do
+                                    evalExpr env i
+                                    evalStmt env (ForStmt NoInit test increment sttm)
+
+            else return Nil
+----------------------------------------------------
+--FORIN
+--evalStmt env (ForInStmt (ForInVar(Id var)) exp sttm) = do
+--    e <- evalExpr env exp
+--    v <- evalStmt env sttm
+--    case v of
+--        Break -> return Break
+--        Return r -> return (Return r)
+--        _ -> evalStmt env (ForInStmt (ForInVar(Id var)) exp sttm)
+
+--evalStmt env (ForInStmt (ForInLVal (LVar var)) exp sttm) = do
+--    e <- evalExpr env exp
+--    v <- evalStmt env sttm
+--    case v of
+--        Break -> return Break
+--        Return r -> return (Return r)
+--        _ -> evalStmt env (ForInStmt (ForInLVal (LVar var)) exp sttm)
+
 
 ----------------------------------------------------
 
@@ -188,6 +245,12 @@ evalStmt env (SwitchStmt expr (s:stm)) = do
                        evalStmt env (BlockStmt arraysttm)
                     else
                        evalStmt env (SwitchStmt expr stm) 
+-----------------------------------------------------------
+--Function
+--evalStmt env (FunctionStmt (Id nome) args sttm) = 
+
+
+-----------------------------------------------------------
 
 -- Do not touch this one :)
 evaluate :: StateT -> [Statement] -> StateTransformer Value

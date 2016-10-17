@@ -24,9 +24,9 @@
 // }
 
 
- var x = "a";
- var y;
- var w = ["1,2","b"];
+ // var x = ["a","b","c"];
+ // var y =[1,1,2];
+ // var w = ["1,2","b"];
  // var c = x.head();
  // var d = x.tail();
  // var e = x.concat(y);
@@ -41,14 +41,35 @@
 //  var r = 0;
 // kessia =+ kessia;
 
-switch (x) {
+// switch (x) {
 
-	case "b":
-		y = [2];
-		break;
+// 	case "b":
+// 		y = [2];
+// 		break;
 
-	case "ab":
-		y = [3];
-		break;
+// 	case "ab":
+// 		y = [3];
+// 		break;
 
+// }
+// var x =10;
+// for (; x < 15;) {
+// 	x = x+1
+// }
+//teste break
+// x = 20;
+// for (var i = 0; i<3 ; i = i + 1){
+//	break;
+// 	x = x+1;
+// }
+
+// var person = ["John", "Doe", 25]; 
+
+// var text = "";
+var x;
+// for (x in person) {
+//     text += person[x];
+// }
+function test(x){
+	return x - 2;
 }
