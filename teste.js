@@ -24,14 +24,14 @@
 // }
 
 
- // var x = ["a","b","c"];
- // var y =[1,1,2];
+ var x = ["a","b","c"];
+ var y =[1,1,2];
  // var w = ["1,2","b"];
- // var c = x.head();
- // var d = x.tail();
- // var e = x.concat(y);
- // var f = x.len();
- // c;
+ var c = x.head();
+ var d = x.tail();
+ var e = x.concat(y);
+ var f = x.len();
+ c;
 // var z = (w==x);
  // var a = (w!=y);
  // var b = "aa"+"b";
@@ -66,10 +66,12 @@
 // var person = ["John", "Doe", 25]; 
 
 // var text = "";
-var x;
-// for (x in person) {
-//     text += person[x];
+// var x = 5;
+// var y;
+// // for (x in person) {
+// //     text += person[x];
+// // }
+// function test(x){
+// 	y =x-2;
+// 	return y;
 // }
-function test(x){
-	return x - 2;
-}

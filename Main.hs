@@ -40,7 +40,6 @@ evalExpr env (ArrayLit (e:es)) = do
 --chamada de função
 evalExpr env (CallExpr expr expressoes) = do
     case expr of 
-   
         (DotRef lista (Id "head")) -> do
             (List l) <- evalExpr env lista
             return $ head l
@@ -54,11 +53,12 @@ evalExpr env (CallExpr expr expressoes) = do
  --dois parametros       
         (DotRef lista (Id "concat")) -> do
             (List l) <- evalExpr env lista
-            list<- evalExpr env (head expressoes)
+            list <- evalExpr env (head expressoes)
             case list of
                 (List a) -> return $ List (l++a)
                 valor -> return $ List (l++[valor])
-        
+
+-- function        
 --------------------------------------------------------
 --Brackets
 evalExpr env (BracketRef expr index) = do
@@ -68,8 +68,8 @@ evalExpr env (BracketRef expr index) = do
         (List t) -> do
             case i of 
                 (Int j) -> getPosicao env ex i
-                _ -> error $ "Index needs to be an Int"
-        _ -> error $ "Invalid Object"
+                _ -> error $ "Index precisa ser inteiro"
+        _ -> error $ "Objeto invalido"
 
 
 --------------------------------------------------------
@@ -79,18 +79,16 @@ tamanhoLista (List (a:as)) (Int tam) = tamanhoLista (List as) (Int (tam+1))
 ------------------------------------------------------------------------------
 
 getPosicao :: StateT -> Value -> Value -> StateTransformer Value
-getPosicao env (List []) (Int index)  = error $ "Empty list"
+getPosicao env (List []) (Int index)  = error $ "Lista vazia"
 getPosicao env (List (l:ls)) (Int index) = do
     if index < 0 then
-        error $ "Invalid index"
+        error $ "Index invalido"
     else
         if (index == 0) then 
             return l
         else
             getPosicao env (List ls) (Int (index - 1))
-
-
-
+---------------------------------------------------------
 evalStmt :: StateT -> Statement -> StateTransformer Value
 evalStmt env EmptyStmt = return Nil
 evalStmt env (VarDeclStmt []) = return Nil
@@ -120,7 +118,6 @@ evalStmt env (BlockStmt (s:stm)) = do
 
 -----------------------------------------------------
 --IF sem else
-
 evalStmt env (IfSingleStmt expr sttm) = do
     Bool e <- evalExpr env expr
     if e then do
@@ -198,25 +195,6 @@ evalStmt env (ForStmt init test increment sttm) = do
 
             else return Nil
 ----------------------------------------------------
---FORIN
---evalStmt env (ForInStmt (ForInVar(Id var)) exp sttm) = do
---    e <- evalExpr env exp
---    v <- evalStmt env sttm
---    case v of
---        Break -> return Break
---        Return r -> return (Return r)
---        _ -> evalStmt env (ForInStmt (ForInVar(Id var)) exp sttm)
-
---evalStmt env (ForInStmt (ForInLVal (LVar var)) exp sttm) = do
---    e <- evalExpr env exp
---    v <- evalStmt env sttm
---    case v of
---        Break -> return Break
---        Return r -> return (Return r)
---        _ -> evalStmt env (ForInStmt (ForInLVal (LVar var)) exp sttm)
-
-
-----------------------------------------------------
 
 --Continue
 evalStmt env (ContinueStmt continue) = return Continue
@@ -247,8 +225,13 @@ evalStmt env (SwitchStmt expr (s:stm)) = do
                        evalStmt env (SwitchStmt expr stm) 
 -----------------------------------------------------------
 --Function
---evalStmt env (FunctionStmt (Id nome) args sttm) = 
-
+evalStmt env (FunctionStmt (Id name) args stmt) = do
+           setVar name (Function (Id name) args stmt)
+           v <- evalStmt env (BlockStmt stmt)
+           case v of
+                Break -> error $ "Break não pode ser usado em função"
+                Return r -> return r
+                _ -> return Nil
 
 -----------------------------------------------------------
 
