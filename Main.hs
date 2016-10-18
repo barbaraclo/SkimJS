@@ -39,6 +39,7 @@ evalExpr env (ArrayLit (e:es)) = do
 ------------------------------------------------------
 --chamada de função
 evalExpr env (CallExpr expr expressoes) = do
+
     case expr of 
         (DotRef lista (Id "head")) -> do
             (List l) <- evalExpr env lista
@@ -58,7 +59,6 @@ evalExpr env (CallExpr expr expressoes) = do
                 (List a) -> return $ List (l++a)
                 valor -> return $ List (l++[valor])
 
--- function        
 --------------------------------------------------------
 --Brackets
 evalExpr env (BracketRef expr index) = do
@@ -88,7 +88,9 @@ getPosicao env (List (l:ls)) (Int index) = do
             return l
         else
             getPosicao env (List ls) (Int (index - 1))
----------------------------------------------------------
+
+---------------------------------------------------------------------------------
+
 evalStmt :: StateT -> Statement -> StateTransformer Value
 evalStmt env EmptyStmt = return Nil
 evalStmt env (VarDeclStmt []) = return Nil
@@ -194,6 +196,7 @@ evalStmt env (ForStmt init test increment sttm) = do
                                     evalStmt env (ForStmt NoInit test increment sttm)
 
             else return Nil
+
 ----------------------------------------------------
 
 --Continue
@@ -337,7 +340,7 @@ getResult (ST f) = f Map.empty
 
 main :: IO ()
 main = do
-    js <- Parser.parseFromFile "teste.js"
+    js <- Parser.parseFromFile "teste1.js"
     let statements = unJavaScript js
     putStrLn $ "AST: " ++ (show $ statements) ++ "\n"
     putStr $ showResult $ getResult $ evaluate environment statements
