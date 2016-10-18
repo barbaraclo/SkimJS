@@ -1,114 +1,147 @@
-//Teste 1: array
-// var listNumber = [1,2,3];
-// var listString = ["plc", "melhorcadeira"];
-// var listListNumber = [[1,1],[2,2],[3,3]];
-// var lista1 = [12,1,4,9,32,22,55,1,9,0,5];
-// var lista2 = ["k", "r", "b"];
+// // LISTA
+var listNumber = [1,2,3];
+var listString = ["plc", "melhorcadeira"];
+var listListNumber = [[1,1],[2,2],[3,3]];
+var lista1 = [12,1,4,9,32,22,55,1,9,0,5];
+var lista2 = ["k", "r", "b"];
+var k = ["a","b","c"];
+var y =[1,1,2];
+var w = [1,2];
+var c = k.head();
+var d = k.tail();
+var e = k.concat(y);
+var f = k.len();
+c;
+// e == d;
 // var a = 2;
 // var b = 1;
-// var k = ["a","b","c"];
-// var y =[1,1,2];
-// var w = ["1,2","b"];
-// var c = k.head();
-// var d = k.tail();
-// var e = k.concat(y);
-// var f = k.len();
-// c;
-
-
-// //Teste 2: Function
-// function tamanhoList (listNumber){
-//    var result = listNumber.len();
-//    return result + 1;
+//	//PROGRAMA 1 
+// if (y == w){
+// a = 3;
 // }
 
+
+// //PROGRAMA 2: Function
+// var lista1 = [12,1,4,9,32,22,55,1,9,0,5];
+// var listNumber = [1,2,3];
+// var listString = ["plc", "melhorcadeira"];
 // function c (ls, xs){
-// var c = lista1.len();
+// var c1 = lista1.len();
 // 	return ls.concat(xs);
 // }
-function isPrime(x) {
-	var count = 0;
-	var i = 1;
-	for ( ; i <= x; i = i + 1){
-		if (x % i == 0){ 
-			count = count + 1;
-		}
-	}
-	// if(count == 2){
-	// 	return true;
-	// }
-	return false;
-}
-isPrime(11);
+// c(listNumber,listString);
+// c1;
 
+// // PROGRAMA 3
+// function isPrime(x) {
+// 	var count = 0;
+// 	var i = 1;
+// 	for (; i <= x; i = i + 1){
+// 		if (x % i == 0){ 
+// 			count = count + 1;
+// 		}
+// 	}
+// 	if(count == 2){
+// 		return true;
+// 	}
+// 	return false;
+// }
+// isPrime(11);
 
-// //Teste 3: If-else
-// function parImpar (){
-// 	var x = 5;
+// // PROGRAMA 4 : IF - ELSE
+// function parImpar (x){
+	
 // 	if(x%2 == 0){
 // 		return "par";
 // 	}else{
 // 		return "impar";
 // 	}
 // }
+// parImpar (5);
 
-// //Teste 4: Concatenação
+// //PROGRAMA 5: Concatenação
 // function conca (lista1, lista2){
 // var c = lista1.len();
 // 	return lista1.concat(lista2);
 // }
-
-// //Teste 5: While
+// conca ([1,2],["a","b"]);
+// //Programa 6: While
 // var x = 10;
-// while (x > 0) {
+// 	x = x - 1;
+// }while (x > 0) {
+
+
+// // PROGRAMA 7: For
+// var x = 10;
+// var i;
+// for (i = 0; i <10 ;i = i+1){
+//     x = x - 1;
+// }
+//For sem declaracao
+// var x = 10;
+// var i =0;
+// for (; i <10;i = i+1) {
 // 	x = x - 1;
 // }
-
-// //Teste 6: For
+// FOR sem incremento
+// var i = 0;
 // var x = 10;
-// for (;x>0;){
-// 	x = x -1;
+// for (; i <10;) {
+// 	x = x - 1;
+// 	i = i+1;
 // }
 
-// //Teste 7: Break
-// var y = 24;
-// while (y>0){
-// 	y = y + 1;
-// 	if (y == 30){
-// 		break;
-// 	}
+//Programa 8: Break
+// var x = 0;
+// while(x < 10){
+// 	break;
+// 	x = x + 3;
 // }
 
-// //Teste 8: Head
-// function funcaoHead (listNumber){
-// 	var cabeca = listNumber.head();
-// 	return cabeca;
-// }
+// // Head
+// var listNumber = [1,2,3];
+// var cabeca = listNumber.head();
+	
 
-// //Teste 9: Tail
-// function funcaoTail (listNumber){
-// 	var resto = listNumber.tail();
-// 	return resto;
-// }
+// //Tail
 
-// //Teste 10: Concatenação
-// function funcaoConcat (listNumber, listString){
-// 	return listNumber.concat(listString);
-// }
+	// var resto = listNumber.tail();
+ //    var listString = ["plc", "melhorcadeira"];
+// //Concatenação
+// listNumber.concat(listString);
 
-// //Teste 11: Do-While
+
+// //Programa 9: Do-While
+// var ke =1;
+// var ra =1;
 // do {
-// 	x = a;
-// 	a = 1;
+	
+// 	ra = ra+1;
 // }
-// while (b >a)
+// while (ke >ra)
+////Do-While
+// var ke=10;
+// var ra=1;
+// do {
+	
+// 	ra = ra+1;
+// }
+// while (ke >ra)
 
-// //Teste 12: Break
+
+// //Programa 10: Break - IF
+// var a = 20;
+// var b = 10;
 // if (a >b){
 // 	break;
+// 	b = b-1;
+
 // }
 
-// //Teste 13: Switch
+// //Programa 11: Switch
+
+// var y;
+// var x = 2;
 // switch (x) {
 
 // 	case 1:
@@ -121,20 +154,25 @@ isPrime(11);
 
 // }
 
-// //Teste 14: For
+// //Programa 12: For
+// var x= 10;
 // for (; x < 15;) {
 // 	x = x+1;
 // }
 
-// //Teste 15: Break
-// x = 20;
-// for (var i = 0; i<3 ; i = i + 1){
+// //Programa 13: Break - FOR
+// var x = 20;
+
+// for (var i = 0; i < 5 ;i = i + 1){
 // 	x = x+1;
 // 	break;
-	
 // }
 
-
-
-
-
+// //FOR 
+// var ls = [4,8,15,16,23,42];
+// var first =ls.len();
+// var i =3;
+// for(; i > 0;i = i - 1){
+// 	first = 1 + first;
+// }
+// first;

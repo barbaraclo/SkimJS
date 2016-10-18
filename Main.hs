@@ -126,9 +126,7 @@ evalStmt env (BlockStmt (s:stm)) = do
     case s1 of 
         Break -> return Break 
         Return k -> return (Return k)
-        _ -> do 
-            evalStmt env s
-            evalStmt env (BlockStmt stm)
+        _ -> do evalStmt env (BlockStmt stm)
 
 -----------------------------------------------------
 --IF sem else
@@ -187,6 +185,7 @@ evalStmt env (ForStmt init test increment sttm) = do
                 Return t -> return (Return t)
                 Break -> return Break
                 _ -> do
+
                     case increment of 
                         Nothing -> evalStmt env (ForStmt NoInit test increment sttm)
                         Just i -> do
@@ -288,7 +287,7 @@ infixOp env OpNEq  (List l) (List m) = do
     Bool resul <- infixOp env OpEq (List l)  (List m)
     return $ Bool  $ not resul
 
-infixOp env _ _ _ = return $ error "Operação inválida"
+--infixOp env _ _ _ = return $ error "Operação inválida"
 -- Environment and auxiliary functions
 --
 
