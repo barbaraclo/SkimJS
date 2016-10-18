@@ -1,19 +1,19 @@
 //Teste 1: array
-var listNumber = [1,2,3];
-var listString = ["plc", "melhorcadeira"];
-var listListNumber = [[1,1],[2,2],[3,3]];
-var lista1 = [12,1,4,9,32,22,55,1,9,0,5];
-var lista2 = ["k", "r", "b"];
-var a = 2;
-var b = 1;
-var k = ["a","b","c"];
-var y =[1,1,2];
-var w = ["1,2","b"];
-var c = k.head();
-var d = k.tail();
-var e = k.concat(y);
-var f = k.len();
-c;
+// var listNumber = [1,2,3];
+// var listString = ["plc", "melhorcadeira"];
+// var listListNumber = [[1,1],[2,2],[3,3]];
+// var lista1 = [12,1,4,9,32,22,55,1,9,0,5];
+// var lista2 = ["k", "r", "b"];
+// var a = 2;
+// var b = 1;
+// var k = ["a","b","c"];
+// var y =[1,1,2];
+// var w = ["1,2","b"];
+// var c = k.head();
+// var d = k.tail();
+// var e = k.concat(y);
+// var f = k.len();
+// c;
 
 
 // //Teste 2: Function
@@ -21,6 +21,26 @@ c;
 //    var result = listNumber.len();
 //    return result + 1;
 // }
+
+// function c (ls, xs){
+// var c = lista1.len();
+// 	return ls.concat(xs);
+// }
+function isPrime(x) {
+	var count = 0;
+	var i = 1;
+	for ( ; i <= x; i = i + 1){
+		if (x % i == 0){ 
+			count = count + 1;
+		}
+	}
+	// if(count == 2){
+	// 	return true;
+	// }
+	return false;
+}
+isPrime(11);
+
 
 // //Teste 3: If-else
 // function parImpar (){

@@ -39,7 +39,7 @@ evalExpr env (ArrayLit (e:es)) = do
 ------------------------------------------------------
 --chamada de função
 evalExpr env (CallExpr expr expressoes) = do
-
+   
     case expr of 
         (DotRef lista (Id "head")) -> do
             (List l) <- evalExpr env lista
@@ -58,7 +58,13 @@ evalExpr env (CallExpr expr expressoes) = do
             case list of
                 (List a) -> return $ List (l++a)
                 valor -> return $ List (l++[valor])
-
+        
+        (VarRef (Id name)) -> do
+            f <- stateLookup env name 
+            case f of 
+              (Function id args sttm) -> do
+                declareArgs env args expressoes
+                evalStmt env (BlockStmt sttm)
 --------------------------------------------------------
 --Brackets
 evalExpr env (BracketRef expr index) = do
@@ -88,7 +94,13 @@ getPosicao env (List (l:ls)) (Int index) = do
             return l
         else
             getPosicao env (List ls) (Int (index - 1))
-
+----------------------------------------------------------------------------
+declareArgs :: StateT -> [Id] -> [Expression] -> StateTransformer Value
+declareArgs env [] [] = return Nil
+declareArgs env ((Id a):as) (p:ps) = do
+    var <- evalExpr env p
+    setVar a var
+    declareArgs env as ps
 ---------------------------------------------------------------------------------
 
 evalStmt :: StateT -> Statement -> StateTransformer Value
@@ -228,13 +240,7 @@ evalStmt env (SwitchStmt expr (s:stm)) = do
                        evalStmt env (SwitchStmt expr stm) 
 -----------------------------------------------------------
 --Function
-evalStmt env (FunctionStmt (Id name) args stmt) = do
-           setVar name (Function (Id name) args stmt)
-           v <- evalStmt env (BlockStmt stmt)
-           case v of
-                Break -> error $ "Break não pode ser usado em função"
-                Return r -> return r
-                _ -> return Nil
+evalStmt env (FunctionStmt (Id name) args stmt) = setVar name (Function (Id name) args stmt)
 
 -----------------------------------------------------------
 
@@ -281,7 +287,8 @@ infixOp env OpEq  (List l)   (List m) = do
 infixOp env OpNEq  (List l) (List m) = do
     Bool resul <- infixOp env OpEq (List l)  (List m)
     return $ Bool  $ not resul
---
+
+infixOp env _ _ _ = return $ error "Operação inválida"
 -- Environment and auxiliary functions
 --
 

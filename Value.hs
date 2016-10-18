@@ -27,7 +27,8 @@ instance Show Value where
   show Break = "break"
   show Continue = "continue"
   show (List a) = show a
-  show (Function (Id nome) listarg liststtm) = "Function" ++ nome ++ "("++ show listarg ++ ")" 
+  show (Function (Id nome) listarg liststtm) = "Function" ++ nome ++ "("++ show listarg ++ ")" ++ show liststtm
+  show (Return valor) = show valor
   
 -- This function could be replaced by (unwords.map show). The unwords
 -- function takes a list of String values and uses them to build a 
